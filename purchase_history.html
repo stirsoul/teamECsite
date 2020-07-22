@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8" />
+
+<link href="/css/reset.css" th:href="@{/css/reset.css}" rel="stylesheet" />
+<link href="/css/style.css" th:href="@{/css/style.css}" rel="stylesheet" />
+<title>Ocean.com</title>
+</head>
+<body>
+
+<header th:insert="fragments/page_header::pageHeader"></header>
+
+<main>
+
+	<div class="container history">
+		<div class="noData hidden">
+			<p class ="info">購入履歴はありません。</p>
+		</div>
+		<div>
+			<h2>購入履歴</h2>
+			<p style = "padding-top: 20px;" class="info">購入履歴はありません。</p>
+		<table class="history">
+			<tr>
+	 			<th>購入日時</th><th>商品名</th><th>価格(円)</th><th>個数</th><th>宛名</th><th>宛先住所</th>  
+			</tr>
+			<tr th:each="display: ${history}">
+			<td th:text="${display.purchasedAt}"/>
+			<td th:text="${display.productName}"/>
+			<td th:text="${display.price}"/>
+			<td th:text="${display.productCount}"/>
+			<td th:text="${display.familyName} + ' ' + ${display.firstName}"/>
+			<td th:text="${display.address}" class="address"/>
+			</tr>
+		</table>
+		</div>	
+		<div class="buttonArea">
+			<button>削除</button>
+		</div>
+		</div>
+<script>
+    $(function() {
+    $('p').hide();
+	if($('.history').find('tr').length === 1){
+	$('table').hide();
+	$('p').show();
+	$('.buttonArea').find('button').hide();
+	}
+	$('.buttonArea').click(function(){
+		$('th').hide();
+		$('p').show();
+		$('.buttonArea').find('button').hide();
+	});
+}); 
+$(() => {
+	$('.buttonArea').on('click', (event) => {
+		event.preventDefault();
+		let tdList = $(event.target).parent().parent().find('td');
+		
+		let purchasedAt = $(tdList[0]).text();
+		let jsonString = {
+				'purchasedAt' : purchasedAt,
+				'productName' : $(tdList[1]).text(),
+				'price' : ''
+		};
+		$.ajax({
+			type: 'POST',
+			url: '/ocean/history/delete',
+			data: JSON.stringify(jsonString),
+			contentType: 'application/json',
+			scriptCharset: 'utf-8'
+		})
+		.then((result) => {
+			console.log(result);
+			$(tdList).parent().remove();
+			$('th').hide();
+		}, () => {
+			console.error('Error: ajax connection failed.');
+		}
+		);
+	});
+});
+</script>  
+</main>
+</body>
+</html>
