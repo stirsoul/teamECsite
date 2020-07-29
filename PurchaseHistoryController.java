@@ -28,7 +28,7 @@ public class PurchaseHistoryController {
 	public String index(Model model) {
 		model.addAttribute("loginSession", loginSession);
 		int userId = loginSession.getUserId();
-		List<PurchaseHistoryDto> history = mapper.findHistory(userId);
+		List<PurchaseHistoryDto> history = mapper.findHistoryByUserId(userId);
 		model.addAttribute("history", history);
 		return "purchase_history";
 	}

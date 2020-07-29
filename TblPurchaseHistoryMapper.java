@@ -21,7 +21,7 @@ import jp.co.internous.ocean.model.domain.dto.PurchaseHistoryDto;
 				 "WHERE #{userId} = p.user_id " +
 				 "AND p.status = 1 " +
 				 "ORDER  BY purchased_at desc")
-	List<PurchaseHistoryDto> findHistory(int userId);
+	List<PurchaseHistoryDto> findHistoryByUserId(int userId);
 	
 //	購入情報の書き込み（決済から）
 	@Insert("INSERT INTO tbl_purchase_history (user_id, product_id, product_count, price, destination_id) " +
